@@ -1,0 +1,17 @@
+{% extends 'main.html' %}
+{% block content %}
+<h1>{{room.name}}</h1>
+
+<table> <tr>Name</tr>
+    
+    {% for i in names %}
+    <td>{{i.name}}</td>
+    </tr>
+ </table>
+
+    {% endfor %}
+
+
+{% endblock %}
+
+    
