@@ -1,16 +1,71 @@
 {% extends 'main.html' %}
 {% block content %}
+<style>
+    .room-container{
+        display: grid;
+        grid-template-columns: 3fr 1fr;
+        
+    }
+</style>
+<div class="room-container">
+    
+    <div>
+
 <h1>{{room.name}}</h1>
 
-<table> <tr>Name</tr>
-    
-    {% for i in names %}
-    <td>{{i.name}}</td>
-    </tr>
- </table>
 
+<p>{{room.description}}</p>
+   
+<div class="comment-wrapper">
+    <h3>Conversations</h3>
+
+    <hr>
+
+    {% for message in room_messages %}
+        {% if request.user == message.user or request.user.is_superuser %}
+
+            <a href="{% url 'deletecomment' message.id %}">DELETE</a>
+            {% if request.user == message.user %}
+
+            <a href="{% url 'editcomment' message.id %}">EDIT</a>
+            {% endif %}
+         {% endif %}
+        <li> @{{message.user}} --> {{message.created|timesince}} ago 
+           </li>
+           <br>
+           {{message}}  
+          
+        <hr>
     {% endfor %}
+</div>
 
+
+<div class="comment-form">
+{% if request.user.is_authenticated %}
+<form method="POST" action=""> 
+    {% csrf_token %}
+
+
+    <input type="text" name="comment" placeholder="Enter your comment">
+    <input type="submit" name="comment">
+
+
+
+</form>
+</div>
+{% endif %}
+
+
+</div>
+<div>
+  <h3>Participants</h3>
+  {% for participant in participants %}
+    <ul><li>{{participant.username}}</li></ul></small>
+   {% endfor %}
+  <hr>
+</div>
+
+</div>
 
 {% endblock %}
 

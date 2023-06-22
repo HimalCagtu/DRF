@@ -1,8 +1,10 @@
 from django.contrib import admin
 from . import models
+from .models import *
 
 # Register your models here.
 
-admin.site.register(models.Room)
-admin.site.register(models.Message)
-admin.site.register(models.Topic)
+admin.site.register(Room)
+admin.site.register(Message)
+admin.site.register(Topic)
+

@@ -10,7 +10,8 @@
  <label>Username</label>
  <input type="text" name="Username" placeholder="Enter Username">
 
- <label>Username</label>
+ <label>Password
+ </label>
  <input type="password" name="Password" placeholder="Enter Password">
 <input type="submit" value="login">
 <p> Not a member?</p>
@@ -18,7 +19,7 @@
 </form>
 {% else %}
 
-<form method="POST" action="">
+<form method="GET" action="">
 
     {% csrf_token %}
     {{form.as_p}}

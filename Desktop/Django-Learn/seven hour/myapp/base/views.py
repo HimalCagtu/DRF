@@ -1,5 +1,5 @@
 from django.shortcuts import render,redirect
-from .models import Room,Topic
+from .models import Room,Topic,Message
 from django.contrib.auth.models import User
 from .forms import *
 from django.http import HttpResponse
@@ -26,6 +26,7 @@ def loginpage(request):
 
     if request.method=='POST':
         username = request.POST.get('Username')
+        username = username.lower()
         password = request.POST.get("Password")
 
         try:
@@ -36,7 +37,7 @@ def loginpage(request):
 
         user = authenticate(request, username=username , password=password)
 
-        if user :
+        if user:
             login(request, user)
             return redirect('home')
         
@@ -62,8 +63,10 @@ def signuppage(request):
             obj= form.save(commit=False)
             obj.username=obj.username.lower()
             obj.save()
+            login(request , obj)
             return redirect('login')
-
+    else:
+        messages.error(request , 'Error occred during registratiom')
     page='signup'
 
     return render(request, './base/login_register.html',{'form':form})
@@ -74,16 +77,36 @@ def signuppage(request):
 def home(request):
     q =request.GET.get('q') if request.GET.get('q') != None else ''
     topics = Topic.objects.all()
-  
+    room_messages = Message.objects.filter(Q(room__topic__name__contains=q))
+
     
+  
     rooms = Room.objects.filter(Q(topic__name__contains=q) & Q(name__icontains=q))
     total_room = rooms.count()
-    return render(request, './base/home.html',{'rooms':rooms,'topics':topics,'room_count':total_room})
+  
+    context = {'rooms':rooms,'topics':topics,'room_count':total_room,'room_messages':room_messages,}
+    
+    return render(request, './base/home.html',context)
 
 def room(request, pk):
     # room=rooms[1]['id']
     room=Room.objects.get(id=pk)
+    room_messages = room.message_set.all().order_by('-created')
+    comments = Message.objects.all()
+    participants = room.participants.all()
     
+    
+    
+
+    if request.method=='POST':
+        
+        message = Message.objects.create(user = request.user, room = room , 
+                                         body = request.POST.get('comment'))
+        room.participants.add(request.user)
+        return redirect('room',pk=room.id)
+
+        # if 
+
 
     # names=[
 
@@ -92,6 +115,9 @@ def room(request, pk):
     # ]
     context= {
         'room':room,
+        'room_messages':room_messages,
+        'comments':comments,
+        'participants':participants
         
         # 'names':'a'
     }
@@ -154,8 +180,53 @@ def deleteroom(request, pk):
 
     context={'form':form,
              'room':room}
+    
+    return render(request, './base/delete.html',context)
+
+
+@login_required(login_url='login')
+def deletecomment(request, pk):
+  
+    room = Message.objects.get(id=pk)
+
+    if request.user == room.user or request.user.is_superuser:
+        if request.method=='POST':
+            room.delete()
+            return redirect('home')
+    
+    
+
+    context ={ 'room':room}
 
     return render(request, './base/delete.html',context)
+
+    pass
+
+
+
+
+@login_required(login_url='login')
+def editcomment(request, pk):
+    room_message = Message.objects.get(id =pk)
+    form = MessageForm(instance=room_message)
+    if request.method=='POST':
+        form = MessageForm(request.POST , instance=room_message)
+        form.save()
+        return redirect( 'home')
+
+    
+        # body = request.POST.get('body')
+
+
+
+
+    # room_message = Message.objects.get(id = pk)
+
+
+    return render(request, './base/editcomment.html', {'form':form})
+
+
+
 
 # def addtopic(request):
 

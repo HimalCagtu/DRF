@@ -5,8 +5,14 @@
 {% if request.user.is_authenticated %}
  <h3>Hello {{request.user.username}}</h3>
 
-<a href="{% url 'logout' %}"> logout</a>
 
+
+<a href="{% url 'logout' %}"> logout</a>
+<hr>
+
+{% if user.is_superuser %}
+<a href="/admin">Admin panel</a>
+{% endif  %}
 {% else %}
 <a href="{%url 'login' %}">Login</a>
 

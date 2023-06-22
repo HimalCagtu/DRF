@@ -14,7 +14,7 @@ class Room(models.Model):
     
     name = models.CharField(max_length=30)
     description = models.TextField(null= True, blank=True)
-    # participants = 
+    participants = models.ManyToManyField(User , related_name='participants', blank=True)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
 
@@ -34,7 +34,10 @@ class Message(models.Model):
     def __str__(self) -> str:
         return self.body[:50]
     
-
+    
+class ImageTest(models.Model):
+    name = models.CharField(max_length=10)
+    image = models.ImageField(upload_to='images/')
 
 
 # class Langauge(models.Model):

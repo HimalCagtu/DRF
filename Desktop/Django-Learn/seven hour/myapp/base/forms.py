@@ -13,8 +13,9 @@ class TopicForm(ModelForm):
         fields = '__all__'
 
 
-# class LangaugeForm(ModelForm):
+class MessageForm(ModelForm):
 
-#     class Meta:
-#         model = Langauge
-#         fields = '__all__'
+    class Meta:
+        model = Message
+        fields = ['body']
+

@@ -14,6 +14,9 @@ urlpatterns = [
     path('create_room/', views.createroom, name ='createroom'),
     path('update_room/<int:pk>', views.updateroom, name ='updateroom'),
     path('delete_room/<int:pk>', views.deleteroom, name ='delete'),
+    path('delete/<int:pk>', views.deletecomment, name ='deletecomment'),
+    path('edit/<int:pk>', views.editcomment, name ='editcomment'),
+
     # path('addtopic', views.addtopic, name ='addtopic'),
     
 ]
