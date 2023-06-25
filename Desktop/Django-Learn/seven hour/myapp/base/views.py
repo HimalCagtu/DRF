@@ -50,8 +50,12 @@ def loginpage(request):
 
 def logoutpage(request):
    
-    logout(request)
-    return redirect('login')
+    # logout(request)
+    if request.method == 'POST':
+        logout(request)
+        return redirect('home')
+
+    return render(request,'base/logout.html')
 
 
 def signuppage(request):
@@ -81,7 +85,7 @@ def home(request):
 
     
   
-    rooms = Room.objects.filter(Q(topic__name__contains=q) & Q(name__icontains=q))
+    rooms = Room.objects.filter(Q(topic__name__contains=q) or Q(name__icontains=q))
     total_room = rooms.count()
   
     context = {'rooms':rooms,'topics':topics,'room_count':total_room,'room_messages':room_messages,}
@@ -92,8 +96,13 @@ def room(request, pk):
     # room=rooms[1]['id']
     room=Room.objects.get(id=pk)
     room_messages = room.message_set.all().order_by('-created')
-    comments = Message.objects.all()
+    # comments = Message.objects.all()
     participants = room.participants.all()
+    context = {
+        'room_messages':room_messages,
+        'room':room,
+        'participants':participants
+    }
     
     
     
@@ -105,24 +114,19 @@ def room(request, pk):
         room.participants.add(request.user)
         return redirect('room',pk=room.id)
 
-        # if 
+    return render(request, 'base/room.html',context)
 
+def userprofile(request, pk):
+    user = User.objects.get(id=pk)
+    room = user.room_set.all()
+    room_messages = user.message_set.all()
+    context ={'user' : user,'room_messages':room_messages,
+              'rooms':room}
 
-    # names=[
+    
+ 
 
-    #     {'name':'himal'},
-    #     {'name':'suraj'},
-    # ]
-    context= {
-        'room':room,
-        'room_messages':room_messages,
-        'comments':comments,
-        'participants':participants
-        
-        # 'names':'a'
-    }
-
-    return render(request, './base/room.html',context)
+    return render(request, 'base/userprofile.html',context)
 
 def main(request):
 
@@ -131,14 +135,17 @@ def main(request):
 @login_required(login_url='/login')
 def createroom(request):
     form = RoomForm()
+    topic = Topic.objects.all()
     if request.method=='POST':
-        form = RoomForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('home')
+        topic_name = request.POST.get('topic')
+        topic, created =Topic.objects.get_or_create(name =topic_name)
+        Room.objects.create(host =request.user , topic = topic , name = request.POST.get('name'), description = request.POST.get('description'))
+        
+        
+        return redirect('home')
     
 
-    context={'form':form}
+    context={'form':form,'topics':topic}
 
     return render (request, './base/room_form.html',context)
 
