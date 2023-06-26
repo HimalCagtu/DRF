@@ -20,3 +20,10 @@ class MessageForm(ModelForm):
         model = Message
         fields = ['body']
 
+class UserForm(ModelForm):
+
+    class Meta:
+        model = User
+        fields = ['username','email']
+
+

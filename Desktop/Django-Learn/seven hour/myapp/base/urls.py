@@ -17,6 +17,8 @@ urlpatterns = [
     path('delete/<int:pk>', views.deletecomment, name ='deletecomment'),
     path('edit/<int:pk>', views.editcomment, name ='editcomment'),
     path('userprofile/<int:pk>', views.userprofile, name ='userprofile'),
+    path('updateuser', views.updateUser, name ='updateuser'),
+    path('book', views.Book, name ='book'),
 
     # path('addtopic', views.addtopic, name ='addtopic'),
     

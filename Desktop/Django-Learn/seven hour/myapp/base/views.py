@@ -110,7 +110,7 @@ def room(request, pk):
     if request.method=='POST':
         
         message = Message.objects.create(user = request.user, room = room , 
-                                         body = request.POST.get('comment'))
+                                         body = request.POST.get('body'))
         room.participants.add(request.user)
         return redirect('room',pk=room.id)
 
@@ -154,7 +154,7 @@ def updateroom(request, pk):
 
     room = Room.objects.get(id=pk)
     form = RoomForm(instance=room)
-
+    topic = Topic.objects.all()
     if request.user != room.host:
         # return HttpResponse('Please login as a authorized user')
         messages.error(request,'Not authorized, Please Login as another user')
@@ -168,7 +168,8 @@ def updateroom(request, pk):
             return redirect('home')
 
     return render(request, './base/room_form.html',{'room':room,
-                                                    'form':form})
+                                                    'form':form,
+                                                    'topic':topic})
 @login_required(login_url='login')
 def deleteroom(request, pk):
     room= Room.objects.get(id=pk)
@@ -235,16 +236,33 @@ def editcomment(request, pk):
 
 
 
-# def addtopic(request):
+def updateUser(request):
 
-#     form= TopicForm()
+    user = request.user
+    form = UserForm(instance=user)
 
-#     if request.method=='POST':
-#         form = RoomForm(request.POST)
-#         if form.is_valid():
-#             form.save()
-#             return redirect('home')
+    if request.method == 'POST':
+        form = UserForm(request.POST, instance=user)
+        form.save()
+        return redirect('userprofile',pk=user.id)
+
+    return render(request ,'base/update-user.html',{'user':user,
+                                                    'form':form})
 
 
-#     return render(request, './base/topic.html',{'form':form})
 
+def Book(request):
+    form = BookForm()
+
+    if request.method == 'POST':
+        
+        form = BookForm(request.POST)
+        if form.is_valid():
+            try:
+                form.save()
+                return redirect('home')
+            except:
+                return HttpResponse('not workinfg')
+
+
+    return render(request, 'base/book.html' ,{'form':form})

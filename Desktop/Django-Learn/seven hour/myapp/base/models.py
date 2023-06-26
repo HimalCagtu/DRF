@@ -53,3 +53,11 @@ class ImageTest(models.Model):
 #     class Meta:
 #         ordering = ['-created']
 
+
+class Book(models.Model):
+    name = models.ForeignKey(User,on_delete=models.CASCADE)
+    guide =models.ManyToManyField(User , related_name='guide')
+
+
+    def __str__(self) -> str:
+        return self.guide
