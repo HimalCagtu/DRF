@@ -1,0 +1,28 @@
+{% if page == 'login' %}
+
+    {% if messages %}
+        {% for message in messages %}
+            <p style=" color: red; justify-content: center; text-align: center;">{{message}}</p>
+        {% endfor %}
+    {% endif %}
+
+ <form method="POST" action="" style="margin-bottom: 20px;">
+    {% csrf_token %}
+    <label>UserName</label>
+    <input type="text" name="username"  style="padding: 5px; border: 1px solid #ccc; margin-bottom: 10px;">
+    <br>
+    <label>password</label>
+    <input type="password" name="password"  style="padding: 5px; border: 1px solid #ccc; margin-bottom: 10px;">
+    <br>
+    <input type="submit" value="Login" style="padding: 5px 10px; background-color: #4CAF50; color: white; border: none; cursor: pointer;">
+    <a href="{% url 'signup' %}"style="text-decoration:none;padding: 5px 10px; background-color: #4CAF50; color: white; border: none; cursor: pointer;">Signup</a>
+</form>
+
+{%else %}
+<form method="POST" style="margin-bottom: 20px;">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit" value="Signup" style="padding: 5px 10px; background-color: #4CAF50; color: white; border: none; cursor: pointer;">
+    <a href="{{request.META.HTTP_REFERER}}" style="text-decoration: solid;">Go back</a>
+</form>
+{% endif %}
