@@ -1,0 +1,26 @@
+{% if page == 'signup' %}
+
+<form method="POST">
+
+    {% csrf_token %}
+   
+    {{form.as_p}}
+    <input type="file" name ="image">
+    <input type="submit" value="Signup">
+</form>
+
+{% else %}
+
+<form method="POST">
+
+    {% csrf_token %}
+    <label>EMAIL</label>
+    <input type="email" name="email">
+    <br>
+    <label>PASSWORD</label>
+    <input type="password" name="password">
+    
+    <input type="submit" value="Login">
+</form>
+
+{% endif %}
