@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Todo Web App</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Todo List</h1>
+        <form method="POST" action="">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="task">Task:</label>
+                <input type="text" class="form-control" id="task" name="task" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Add Task</button>
+        </form>
+        <br>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Task</th>
+                    <th>Completed</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for todo in todos %}
+                <tr>
+                    <td>{{ todo.task }}</td>
+                    <td>{{ todo.completed }}</td>
+                    <td>
+                        <a href="" class="btn btn-sm btn-primary">Edit</a>
+                        <a href="" class="btn btn-sm btn-danger">Delete</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        
+    </div>
+    <script type="text/javascript">
+        buildList()
+        function buildList(){
+            var wrapper = document.getElementById('table table-striped')
+
+            var url = 'http://127.0.0.1:8000/'
+
+            fetch(url)
+            .then((resp) => resp.json())
+            .then(function(data){
+                console.log('Data:', data)
+            })
+
+            var list = data
+
+            for (var i in list){
+
+                var item = `<tr>${i}</tr> `
+
+            }
+
+        }
+    </script>
+</body>
+</html>
